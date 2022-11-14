@@ -1,1 +1,1 @@
-# snoflake-scripts
+# snowflake-scripts
