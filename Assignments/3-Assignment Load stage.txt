@@ -1,0 +1,14 @@
+SELECT * FROM CUSTOMERS
+
+-- create stage object
+CREATE OR REPLACE STAGE EXERCISE_DB.public.aws_stage
+    url='s3://snowflake-assignments-mc/loadingdata';
+
+-- List files in stage
+LIST @EXERCISE_DB.public.aws_stage;
+
+-- Load the data 
+COPY INTO EXERCISE_DB.PUBLIC.CUSTOMERS
+    FROM @aws_stage
+    file_format= (type = csv field_delimiter=';' skip_header=1)
+    

@@ -1,0 +1,34 @@
+-- 1. Create a table called employees with the following columns and data types:
+CREATE TABLE employees(
+  customer_id int,
+  first_name varchar(50),
+  last_name varchar(50),
+  email varchar(50),
+  age int,
+  department varchar(50)
+);
+
+-- 2. Create a stage object pointing to 's3://snowflake-assignments-mc/copyoptions/example1'
+
+
+CREATE OR REPLACE STAGE EXERCISE_DB.PUBLIC.aws_stage
+    url='s3://snowflake-assignments-mc/copyoptions/example1';
+
+-- 3. Create a file format object with the specification
+CREATE OR REPLACE file format EXERCISE_DB.FILE_FORMATS.my_file_format
+    type = csv
+      field_delimiter = ','
+      skip_header = 1;
+
+-- 4. Use the copy option to only validate if there are errors and if yes what errors.
+
+COPY INTO EXERCISE_DB.PUBLIC.EMPLOYEES
+    FROM @EXERCISE_DB.PUBLIC.aws_stage
+    file_format= (FORMAT_NAME = EXERCISE_DB.FILE_FORMATS.my_file_format)
+    VALIDATION_MODE = RETURN_ERRORS;
+
+-- Use ON_ERROR
+COPY INTO EXERCISE_DB.PUBLIC.EMPLOYEES
+    FROM @EXERCISE_DB.PUBLIC.aws_stage
+      file_format= EXERCISE_DB.FILE_FORMATS.my_file_format
+      ON_ERROR = CONTINUE;      

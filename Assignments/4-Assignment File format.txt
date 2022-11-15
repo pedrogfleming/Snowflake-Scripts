@@ -1,0 +1,30 @@
+-- 1. Create a stage & file format object
+CREATE OR REPLACE STAGE EXERCISE_DB.PUBLIC.AWS_STAGE
+    url='s3://snowflake-assignments-mc/fileformat/';
+
+// Creating schema to keep things organized
+CREATE OR REPLACE SCHEMA file_formats;
+// Creating file format object
+CREATE OR REPLACE file format EXERCISE_DB.FILE_FORMATS.my_file_format;
+ALTER FILE FORMAT EXERCISE_DB.FILE_FORMATS.my_file_format
+SET SKIP_HEADER = 1,
+FIELD_DELIMITER='|',
+FILE_EXTENSION = '.csv';
+-- 2. List the files in the table
+
+LIST @AWS_STAGE;
+
+
+DESC file format EXERCISE_DB.FILE_FORMATS.my_file_format;
+-- 3. Load the data in the existing customers table using the COPY command your stage and the created file format object.
+
+COPY INTO EXERCISE_DB.PUBLIC.CUSTOMERS
+    FROM @AWS_STAGE
+    file_format= (FORMAT_NAME=EXERCISE_DB.FILE_FORMATS.my_file_format)
+    ON_ERROR = 'SKIP_FILE_3'; 
+    
+    -- Alternative
+COPY INTO EXERCISE_DB.PUBLIC.CUSTOMERS
+    FROM @aws_stage
+      file_format= EXERCISE_DB.public.aws_fileformat
+    
