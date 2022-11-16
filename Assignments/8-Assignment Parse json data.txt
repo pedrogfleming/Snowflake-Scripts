@@ -1,0 +1,56 @@
+-- 1. Query from the previously created JSON_RAW  table.
+
+-- Note: This table was created in the previous assignment (assignment 7) where you had to create a stage object that is pointing to 's3://snowflake-assignments-mc/unstructureddata/'.
+-- We have called the table JSON_RAW.
+
+select * from EXERCISE_DB.PUBLIC.JSON_RAW;
+
+-- 2. Select the attributes
+
+-- first_name
+
+-- last_name
+
+-- skills
+
+-- and query these columns.
+
+select 
+    Raw:first_name,
+    Raw:last_name,
+    Raw:Skills
+from EXERCISE_DB.PUBLIC.JSON_RAW;
+
+-- 2. The skills column contains an array. Query the first two values in the skills attribute for every record in a separate column:
+
+-- first_name
+
+-- last_name
+
+-- skills_1
+
+-- skills_2
+
+
+
+-- 3. Create a table and insert the data for these 4 columns in that table.
+
+
+CREATE TABLE json_parse(
+    first_name string,
+    last_name string,
+    skill_1 string,
+    skill_2 string
+) AS
+select 
+    Raw:first_name,
+    Raw:last_name,
+    Raw:Skills[0],
+    Raw:Skills[1]
+from EXERCISE_DB.PUBLIC.JSON_RAW;
+
+-- Questions for this assignment
+-- What is the first skill of the person with first_name 'Florina'? -> Hatha Yoga
+
+SELECT * FROM json_parse
+WHERE first_name = 'Florina';
