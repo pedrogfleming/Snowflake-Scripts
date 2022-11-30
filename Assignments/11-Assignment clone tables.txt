@@ -1,0 +1,38 @@
+-- 1. Create exercise table
+
+-- Switch to role of accountadmin --
+ 
+USE ROLE ACCOUNTDMIN;
+USE DATABASE DEMO_DB;
+USE WAREHOUSE COMPUTE_WH;
+ 
+CREATE OR REPLACE TABLE DEMO_DB.PUBLIC.SUPPLIER
+AS
+SELECT * FROM "SNOWFLAKE_SAMPLE_DATA"."TPCH_SF1"."SUPPLIER";
+
+
+-- 2. Create a clone of that table called SUPPLIER_CLONE
+
+CREATE TABLE DEMO_DB.PUBLIC.SUPPLIER_CLONE
+CLONE DEMO_DB.PUBLIC.SUPPLIER;
+
+-- 3. Update the clone table and copy the query id
+
+UPDATE SUPPLIER_CLONE
+SET S_PHONE='###';
+ 
+ 
+ select * from SUPPLIER_CLONE;
+--> Query ID: 01a8a504-0000-0433-0000-00001cbd65c1
+
+
+-- 4. Create another clone from the updated clone using the time travel feature to clone before the update has been executed.
+
+// Using time travel: Method 2 - before Query
+CREATE OR REPLACE TABLE DEMO_DB.PUBLIC.SUPPLIER_CLONE_ClONE
+CLONE DEMO_DB.PUBLIC.SUPPLIER_CLONE before (statement => '01a8a504-0000-0433-0000-00001cbd65c1')
+
+SELECT * FROM DEMO_DB.PUBLIC.SUPPLIER_CLONE_ClONE;
+
+/*Questions for this assignment
+If we delete the source table, does the clone still exist?*/

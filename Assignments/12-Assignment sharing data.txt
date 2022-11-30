@@ -1,0 +1,10 @@
+-- How can we create a share object called CUSTOMER_SHARE and grant sufficient grant privileges (provide sql commands)?
+
+create share CUSTOMER_SHARE;
+grant usage on database CUSTOMER_DB to share CUSTOMER_SHARE;
+grant usage on schema CUSTOMER_DB.PUBLIC to share CUSTOMER_SHARE;
+grant select on table CUSTOMER_DB.PUBLIC.CUSTOMERS to share CUSTOMER_SHARE;
+
+-- How can we add the consumer account (provide sql commands)?
+
+alter share CUSTOMER_SHARE add accounts=<idaccount>;
