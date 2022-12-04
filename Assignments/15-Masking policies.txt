@@ -1,0 +1,58 @@
+-- 2. Create masking policy called name that is showing '***' instead of the original varchar value
+
+create or replace masking policy name 
+    as (val varchar) returns varchar ->
+            case        
+            when current_role() in ('ANALYST_FULL') then val
+            else '***'
+            end;
+        
+
+-- 3. Apply the masking policy on the column full_name    
+
+ALTER TABLE IF EXISTS CUSTOMERS MODIFY COLUMN full_name 
+SET MASKING POLICY name;
+
+
+-- 4. Validating policies
+
+USE ROLE ANALYST_FULL;
+SELECT * FROM CUSTOMERS;
+
+USE ROLE ANALYST_MASKED;
+SELECT * FROM CUSTOMERS;
+
+-- Unset policy
+USE ROLE ACCOUNTADMIN;
+
+ALTER TABLE IF EXISTS CUSTOMERS MODIFY COLUMN full_name
+UNSET MASKING POLICY;
+
+-- Validating policies
+USE ROLE ANALYST_FULL;
+SELECT * FROM CUSTOMERS;
+
+USE ROLE ANALYST_MASKED;
+SELECT * FROM CUSTOMERS;
+
+
+
+-- 6. Alter the policy so that the last two characters are shown and before that only '***' (example: ***er)
+alter masking policy name set body ->
+            case
+            when current_role() in ('ANALYST_FULL') then val
+            else CONCAT('***',RIGHT(val,2))
+            end;
+
+-- 7. Apply the masking policy on the column full_name    
+
+ALTER TABLE IF EXISTS CUSTOMERS MODIFY COLUMN full_name 
+SET MASKING POLICY name;  
+
+-- Validating policies
+
+USE ROLE ANALYST_FULL;
+SELECT * FROM CUSTOMERS;
+
+USE ROLE ANALYST_MASKED;
+SELECT * FROM CUSTOMERS;

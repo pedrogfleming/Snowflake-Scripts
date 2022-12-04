@@ -1,0 +1,27 @@
+-- Create a materialized view called PARTS in the database DEMO_DB from the following statement:
+
+-- SELECT 
+-- AVG(PS_SUPPLYCOST) as PS_SUPPLYCOST_AVG,
+-- AVG(PS_AVAILQTY) as PS_AVAILQTY_AVG,
+-- MAX(PS_COMMENT) as PS_COMMENT_MAX
+-- FROM"SNOWFLAKE_SAMPLE_DATA"."TPCH_SF100"."PARTSUPP"
+-- Execute the SELECT before creating the materialized view and note down the time until the query is executed. ->
+-- PS_SUPPLYCOST_AVG	PS_AVAILQTY_AVG	PS_COMMENT_MAX
+-- 500.47437945	5,000.247526	zzle? theodolites against the express packages impress slyly patterns. accou
+
+SELECT * FROM "SNOWFLAKE_SAMPLE_DATA"."TPCH_SF100"."PARTSUPP" LIMIT 1000
+
+CREATE OR REPLACE MATERIALIZED VIEW PARTS
+AS
+SELECT 
+AVG(PS_SUPPLYCOST) as PS_SUPPLYCOST_AVG,
+AVG(PS_AVAILQTY) as PS_AVAILQTY_AVG,
+MAX(PS_COMMENT) as PS_COMMENT_MAX
+FROM"SNOWFLAKE_SAMPLE_DATA"."TPCH_SF100"."PARTSUPP"
+
+-- Questions for this assignment
+-- How long did the SELECT statement take initially?
+
+SELECT * FROM PARTS;
+
+-- How long did the execution of the materialized view take?
